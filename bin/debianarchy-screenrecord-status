@@ -1,0 +1,8 @@
+#!/bin/bash
+# Waybar indicator for an ongoing wf-recorder session
+
+if pgrep -x wf-recorder >/dev/null; then
+  echo '{"text": "REC", "tooltip": "Stop recording", "class": "active"}'
+else
+  echo '{"text": ""}'
+fi

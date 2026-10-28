@@ -1,0 +1,88 @@
+# The Hyprland desktop — the equivalent of Omarchy's core
+
+# Compositor & hypr ecosystem
+hyprland
+hyprland-guiutils
+hyprland-qtutils
+hypridle
+hyprlock
+hyprpicker
+hyprsunset
+hyprpolkitagent
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk
+xwayland
+uwsm
+
+# Session / login
+sddm
+plymouth
+plymouth-themes
+
+# Bar, notifications, OSD, launcher, wallpaper
+#   walker (Omarchy)  -> fuzzel (walker is not in Debian)
+waybar
+mako-notifier
+libnotify-bin
+swayosd
+swaybg
+fuzzel
+
+# Clipboard, screenshots, screen recording
+#   satty              -> swappy
+#   gpu-screen-recorder -> wf-recorder (gpu-screen-recorder has no binary in testing)
+wl-clipboard
+cliphist
+wtype
+grim
+slurp
+swappy
+wf-recorder
+tesseract-ocr
+tesseract-ocr-eng
+zbar-tools
+qrencode
+
+# Audio (pipewire) & hardware
+pipewire
+pipewire-pulse
+pipewire-alsa
+pipewire-jack
+wireplumber
+libspa-0.2-bluetooth
+alsa-utils
+pamixer
+pulsemixer
+pavucontrol
+playerctl
+brightnessctl
+ddcutil
+bolt
+
+# Input method
+fcitx5
+fcitx5-frontend-gtk3
+fcitx5-frontend-gtk4
+fcitx5-frontend-qt6
+
+# Keyring, GTK/Qt themes
+gnome-keyring
+libsecret-tools
+gnome-themes-extra
+yaru-theme-gtk
+yaru-theme-icon
+qt-style-kvantum
+qt6-wayland
+qtwayland5
+qt6ct
+nwg-look
+xdg-utils
+xdg-terminal-exec
+
+# Files & mounting
+nautilus
+gnome-sushi
+gvfs-backends
+gnome-disk-utility
+udiskie
+ffmpegthumbnailer

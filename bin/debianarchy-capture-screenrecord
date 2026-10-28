@@ -1,0 +1,27 @@
+#!/bin/bash
+# Toggle a screen recording (wf-recorder replaces gpu-screen-recorder on Debian).
+# Usage: debianarchy-capture-screenrecord [region|output]
+
+if pgrep -x wf-recorder >/dev/null; then
+  pkill -INT -x wf-recorder
+  notify-send "Screen recording saved" "$(cat "${XDG_RUNTIME_DIR}/debianarchy-screenrecord" 2>/dev/null)"
+  pkill -RTMIN+8 waybar
+  exit 0
+fi
+
+[[ -f ~/.config/uwsm/default ]] && source ~/.config/uwsm/default
+DIR="${DEBIANARCHY_SCREENRECORD_DIR:-${XDG_VIDEOS_DIR:-$HOME/Videos}}"
+mkdir -p "$DIR"
+FILE="$DIR/screenrecording-$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+echo "$FILE" >"${XDG_RUNTIME_DIR}/debianarchy-screenrecord"
+
+if [[ $1 == output ]]; then
+  args=(-o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')")
+else
+  geometry=$(slurp -d) || exit 1
+  args=(-g "$geometry")
+fi
+
+setsid wf-recorder "${args[@]}" --audio -f "$FILE" >/dev/null 2>&1 &
+sleep 0.3
+pkill -RTMIN+8 waybar

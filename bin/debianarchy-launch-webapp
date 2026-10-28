@@ -1,0 +1,11 @@
+#!/bin/bash
+# Launch a URL as a web app (chromium --app). Usage: debianarchy-launch-webapp <url>
+
+browser=$(xdg-settings get default-web-browser)
+
+case $browser in
+google-chrome* | brave* | microsoft-edge* | vivaldi*) ;;
+*) browser="chromium.desktop" ;;
+esac
+
+exec setsid uwsm-app -- $(sed -n 's/^Exec=\([^ ]*\).*/\1/p' {~/.local,/usr}/share/applications/$browser 2>/dev/null | head -1) --app="$1" "${@:2}"

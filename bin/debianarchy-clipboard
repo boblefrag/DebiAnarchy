@@ -1,0 +1,4 @@
+#!/bin/bash
+# Clipboard history (cliphist + fuzzel)
+
+cliphist list | debianarchy-dmenu "Clipboard › " 15 | cliphist decode | wl-copy

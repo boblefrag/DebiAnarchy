@@ -1,0 +1,29 @@
+# GUI apps & TUIs
+
+# Terminals (alacritty is the default; ghostty is not packaged in Debian)
+alacritty
+foot
+kitty
+
+# Browser
+chromium
+
+# Media / documents
+mpv
+imv
+papers
+libreoffice
+xournalpp
+gnome-calculator
+kdenlive
+obs-studio
+imagemagick
+ffmpeg
+yt-dlp
+
+# TUIs
+btop
+fastfetch
+lazygit
+tealdeer
+qalc

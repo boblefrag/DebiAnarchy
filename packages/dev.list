@@ -1,0 +1,31 @@
+# Dev & shell tools
+
+neovim
+tmux
+starship
+fzf
+ripgrep
+fd-find
+bat
+eza
+zoxide
+du-dust
+gum
+tree-sitter-cli
+
+# Languages / libs (Omarchy installs ruby + libs for Rails)
+ruby
+luarocks
+lua5.1
+cargo
+rustc
+pipx
+python3-gi
+libyaml-dev
+libpq-dev
+mariadb-client
+
+# Docker (Debian packages, not the docker.com repo)
+docker.io
+docker-compose
+docker-buildx

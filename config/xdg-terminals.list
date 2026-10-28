@@ -1,0 +1,5 @@
+# Terminal emulator preference order for xdg-terminal-exec
+# The first found and valid terminal will be used
+Alacritty.desktop
+foot.desktop
+kitty.desktop

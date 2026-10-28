@@ -1,0 +1,46 @@
+# Base system — Debian testing (forky)
+# One package per line. Comments (#) and blank lines are ignored.
+
+build-essential
+ca-certificates
+curl
+wget
+gpg
+git
+git-delta
+man-db
+less
+unzip
+whois
+inetutils-telnet
+socat
+jq
+xmlstarlet
+inotify-tools
+plocate
+bash-completion
+inxi
+moreutils
+dosfstools
+exfatprogs
+btrfs-progs
+systemd-zram-generator
+systemd-resolved
+ufw
+firmware-linux
+firmware-linux-nonfree
+wireless-regdb
+power-profiles-daemon
+
+# Network / bluetooth / printing (avahi + mDNS for network printers)
+network-manager
+iwd
+bluez
+bluez-tools
+avahi-daemon
+libnss-mdns
+cups
+cups-browsed
+cups-filters
+cups-pk-helper
+system-config-printer

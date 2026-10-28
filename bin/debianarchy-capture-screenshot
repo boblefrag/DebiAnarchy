@@ -1,0 +1,26 @@
+#!/bin/bash
+# Screenshot a region (default) or the focused output, copy it, save it, and open it in swappy on click.
+# Usage: debianarchy-capture-screenshot [region|output]
+
+[[ -f ~/.config/uwsm/default ]] && source ~/.config/uwsm/default
+DIR="${DEBIANARCHY_SCREENSHOT_DIR:-${XDG_PICTURES_DIR:-$HOME/Pictures}}"
+mkdir -p "$DIR"
+FILE="$DIR/screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png"
+
+case "${1:-region}" in
+output)
+  output=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')
+  grim -o "$output" "$FILE" || exit 1
+  ;;
+*)
+  geometry=$(slurp -d) || exit 1
+  grim -g "$geometry" "$FILE" || exit 1
+  ;;
+esac
+
+wl-copy <"$FILE"
+
+(
+  action=$(notify-send "Screenshot copied & saved" "Click to edit with swappy" -i "$FILE" -A "default=Edit" -t 10000)
+  [[ $action == default ]] && swappy -f "$FILE" -o "$FILE"
+) &

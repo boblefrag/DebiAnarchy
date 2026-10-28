@@ -1,0 +1,11 @@
+# Changes require a restart to take effect.
+
+# Ensure DebiAnarchy bins are in the path
+export DEBIANARCHY_PATH=$HOME/.local/share/debianarchy
+export PATH=$DEBIANARCHY_PATH/bin:$PATH:$HOME/.local/bin
+
+# Set default terminal and editor
+source ~/.config/uwsm/default
+
+# Activate mise if present on the system
+command -v mise >/dev/null && eval "$(mise activate bash --shims)"

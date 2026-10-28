@@ -1,0 +1,8 @@
+# Fonts (JetBrainsMono Nerd Font is installed outside apt, see install/30-extras.sh)
+fontconfig
+fonts-noto
+fonts-noto-cjk
+fonts-noto-color-emoji
+fonts-font-awesome
+fonts-jetbrains-mono
+fonts-ibm-plex

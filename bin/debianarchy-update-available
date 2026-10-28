@@ -1,0 +1,9 @@
+#!/bin/bash
+# Waybar module: show an icon when apt has upgradable packages (from the last apt update)
+
+count=$(apt list --upgradable 2>/dev/null | grep -c upgradable)
+if ((count > 0)); then
+  printf '{"text": "↑%s", "tooltip": "%s apt updates available"}\n' "$count" "$count"
+else
+  echo '{"text": ""}'
+fi

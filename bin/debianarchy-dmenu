@@ -1,0 +1,4 @@
+#!/bin/bash
+# fuzzel in dmenu mode, with a prompt. Usage: echo -e "a\nb" | debianarchy-dmenu "Prompt"
+
+exec fuzzel --dmenu --prompt "${1:-› } " --lines "${2:-10}"

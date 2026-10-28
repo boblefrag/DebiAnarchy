@@ -1,0 +1,66 @@
+#!/bin/bash
+# DebiAnarchy menu, a fuzzel based take on omarchy-menu.
+# Usage: debianarchy-menu [system|theme|capture|emoji|install|update]
+
+menu() { printf "%s\n" "${@:2}" | debianarchy-dmenu "$1 › " "$(($# - 1))"; }
+
+show_main() {
+  case $(menu "Go" "Apps" "Capture" "Theme" "Install" "Update" "Keybindings" "System") in
+  Apps) debianarchy-launcher ;;
+  Capture) show_capture ;;
+  Theme) show_theme ;;
+  Install) show_install ;;
+  Update) debianarchy-launch-tui debianarchy-update ;;
+  Keybindings) debianarchy-keybindings ;;
+  System) show_system ;;
+  esac
+}
+
+show_system() {
+  case $(menu "System" "Lock" "Suspend" "Log out" "Restart" "Shutdown") in
+  Lock) loginctl lock-session ;;
+  Suspend) systemctl suspend ;;
+  "Log out") uwsm stop ;;
+  Restart) systemctl reboot ;;
+  Shutdown) systemctl poweroff ;;
+  esac
+}
+
+show_capture() {
+  case $(menu "Capture" "Screenshot (region)" "Screenshot (screen)" "Screenrecord (toggle)" "Extract text (OCR)" "Color picker") in
+  "Screenshot (region)") debianarchy-capture-screenshot ;;
+  "Screenshot (screen)") debianarchy-capture-screenshot output ;;
+  "Screenrecord (toggle)") debianarchy-capture-screenrecord ;;
+  "Extract text (OCR)") debianarchy-capture-text ;;
+  "Color picker") sleep 0.2 && hyprpicker -a ;;
+  esac
+}
+
+show_theme() {
+  local theme
+  theme=$(debianarchy-theme-list | debianarchy-dmenu "Theme › " 15)
+  [[ -n $theme ]] && debianarchy-theme-set "$theme" && notify-send "Theme" "$theme applied"
+}
+
+show_install() {
+  case $(menu "Install" "Package (apt)" "Flatpak app" "Extras (mise, gh, lazydocker...)") in
+  "Package (apt)") debianarchy-launch-tui debianarchy-pkg-install ;;
+  "Flatpak app") debianarchy-launch-tui bash -c 'read -rp "Flathub app id: " id && flatpak install -y flathub "$id"; read -rp "Done. Press enter."' ;;
+  "Extras"*) debianarchy-launch-tui bash -c "$HOME/.local/share/debianarchy/install/30-extras.sh; read -rp 'Done. Press enter.'" ;;
+  esac
+}
+
+show_emoji() {
+  local emoji
+  emoji=$(grep -v '^#' "$HOME/.local/share/debianarchy/default/emoji.txt" | debianarchy-dmenu "Emoji › " 15 | cut -d' ' -f1)
+  [[ -n $emoji ]] && printf "%s" "$emoji" | wl-copy && wtype "$emoji"
+}
+
+case "$1" in
+system) show_system ;;
+theme) show_theme ;;
+capture) show_capture ;;
+emoji) show_emoji ;;
+install) show_install ;;
+*) show_main ;;
+esac

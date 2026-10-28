@@ -1,0 +1,17 @@
+#!/bin/bash
+# Toggle hyprsunset between 4000K and off
+
+ON_TEMP=4000
+
+if ! pgrep -x hyprsunset >/dev/null; then
+  setsid uwsm-app -- hyprsunset >/dev/null 2>&1 &
+  sleep 1
+fi
+
+if [[ $(hyprctl hyprsunset temperature 2>/dev/null) == "$ON_TEMP" ]]; then
+  hyprctl hyprsunset identity >/dev/null
+  notify-send "Daylight screen temperature"
+else
+  hyprctl hyprsunset temperature $ON_TEMP >/dev/null
+  notify-send "Nightlight screen temperature"
+fi

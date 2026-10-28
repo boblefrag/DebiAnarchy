@@ -1,0 +1,6 @@
+#!/bin/bash
+# Fuzzy-pick apt packages to install
+
+pkgs=$(apt-cache pkgnames | sort | fzf --multi --preview 'apt-cache show {1} | head -30' --preview-window 'down:60%')
+[[ -n $pkgs ]] && sudo apt install -y $pkgs
+read -rp "Done. Press enter to close."

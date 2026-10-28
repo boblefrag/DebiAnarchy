@@ -1,0 +1,9 @@
+#!/bin/bash
+# Wi-Fi: impala if installed and iwd is the backend, else nmtui
+
+rfkill unblock wifi 2>/dev/null
+if command -v impala >/dev/null && systemctl is-active -q iwd; then
+  exec debianarchy-launch-tui impala
+else
+  exec debianarchy-launch-tui nmtui
+fi

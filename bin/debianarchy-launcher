@@ -1,0 +1,4 @@
+#!/bin/bash
+# App launcher (fuzzel replaces Omarchy's walker, which isn't packaged for Debian)
+
+pkill -x fuzzel || exec fuzzel "$@"

@@ -1,0 +1,4 @@
+#!/bin/bash
+# Launch a TUI in a floating terminal. Usage: debianarchy-launch-tui <command> [args...]
+
+exec setsid uwsm-app -- xdg-terminal-exec --app-id="org.debianarchy.$(basename "$1")" -e "$@"

@@ -1,0 +1,26 @@
+#!/bin/bash
+# Update everything: the DebiAnarchy repo, apt, flatpak, mise
+
+set -e
+DEBIANARCHY_PATH=${DEBIANARCHY_PATH:-$HOME/.local/share/debianarchy}
+
+echo "==> DebiAnarchy"
+git -C "$DEBIANARCHY_PATH" pull --ff-only || echo "(skipped: local changes in $DEBIANARCHY_PATH)"
+
+echo "==> apt"
+sudo apt update
+sudo apt full-upgrade -y
+sudo apt autoremove -y
+
+if command -v flatpak >/dev/null; then
+  echo "==> flatpak"
+  flatpak update -y
+fi
+
+if command -v mise >/dev/null; then
+  echo "==> mise"
+  mise upgrade || true
+fi
+
+pkill -RTMIN+7 waybar 2>/dev/null || true
+read -rp "All up to date. Press enter to close."

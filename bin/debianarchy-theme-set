@@ -1,0 +1,90 @@
+#!/bin/bash
+# Apply a theme: render default/themed/*.tpl from the theme's colors.toml,
+# then reload every component that consumes them.
+# Usage: debianarchy-theme-set <theme-name>
+
+set -e
+
+DEBIANARCHY_PATH=${DEBIANARCHY_PATH:-$HOME/.local/share/debianarchy}
+THEME_NAME="$1"
+
+if [[ -z $THEME_NAME ]]; then
+  echo "Usage: debianarchy-theme-set <theme-name>"
+  echo "Available: $(debianarchy-theme-list | tr '\n' ' ')"
+  exit 1
+fi
+
+# User themes in ~/.config/debianarchy/themes override the bundled ones
+for dir in "$HOME/.config/debianarchy/themes/$THEME_NAME" "$DEBIANARCHY_PATH/themes/$THEME_NAME"; do
+  [[ -f $dir/colors.toml ]] && THEME_DIR="$dir" && break
+done
+if [[ -z $THEME_DIR ]]; then
+  echo "Theme '$THEME_NAME' not found"
+  exit 1
+fi
+
+CURRENT_DIR="$HOME/.config/debianarchy/current"
+OUT_DIR="$CURRENT_DIR/theme"
+mkdir -p "$OUT_DIR"
+rm -f "$OUT_DIR"/*
+
+hex_to_rgb() {
+  local hex="${1#\#}"
+  printf "%d,%d,%d" "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
+}
+
+sed_script=$(mktemp)
+while IFS='=' read -r key value; do
+  key="${key//[\"\' ]/}"
+  [[ $key && $key != \#* ]] || continue
+  value="${value#*[\"\']}"
+  value="${value%%[\"\']*}"
+
+  printf 's|{{ %s }}|%s|g\n' "$key" "$value"
+  printf 's|{{ %s_strip }}|%s|g\n' "$key" "${value#\#}"
+  [[ $value =~ ^# ]] && echo "s|{{ ${key}_rgb }}|$(hex_to_rgb "$value")|g"
+done <"$THEME_DIR/colors.toml" >"$sed_script"
+
+shopt -s nullglob
+for tpl in "$HOME/.config/debianarchy/themed"/*.tpl "$DEBIANARCHY_PATH/default/themed"/*.tpl; do
+  out="$OUT_DIR/$(basename "$tpl" .tpl)"
+  [[ -f $out ]] || sed -f "$sed_script" "$tpl" >"$out"
+done
+rm "$sed_script"
+
+cp "$THEME_DIR/colors.toml" "$OUT_DIR/colors.toml"
+echo "$THEME_NAME" >"$CURRENT_DIR/theme.name"
+
+# Pick the first background shipped with the theme (or dropped in by the user)
+rm -f "$CURRENT_DIR/background"
+for bg in "$HOME/.config/debianarchy/backgrounds/$THEME_NAME"/* "$THEME_DIR"/backgrounds/*; do
+  ln -sf "$bg" "$CURRENT_DIR/background"
+  break
+done
+
+# btop
+mkdir -p "$HOME/.config/btop/themes"
+ln -sf "$OUT_DIR/btop.theme" "$HOME/.config/btop/themes/current.theme"
+
+# GTK light/dark preference
+if [[ -f $THEME_DIR/light.mode ]]; then
+  gsettings set org.gnome.desktop.interface color-scheme "prefer-light" 2>/dev/null || true
+  gsettings set org.gnome.desktop.interface gtk-theme "Adwaita" 2>/dev/null || true
+  gsettings set org.gnome.desktop.interface icon-theme "Yaru" 2>/dev/null || true
+else
+  gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" 2>/dev/null || true
+  gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark" 2>/dev/null || true
+  gsettings set org.gnome.desktop.interface icon-theme "Yaru-dark" 2>/dev/null || true
+fi
+
+# Reload running components (all of these are no-ops outside a Hyprland session)
+if [[ -n $HYPRLAND_INSTANCE_SIGNATURE ]]; then
+  hyprctl reload >/dev/null || true
+  makoctl reload 2>/dev/null || true
+  pkill -SIGUSR2 waybar 2>/dev/null || true
+  pkill -x swayosd-server 2>/dev/null && (setsid uwsm-app -- swayosd-server >/dev/null 2>&1 &)
+  pkill -SIGUSR2 btop 2>/dev/null || true
+  touch "$HOME/.config/alacritty/alacritty.toml" 2>/dev/null || true
+  kitty @ load-config 2>/dev/null || true
+  debianarchy-background
+fi

@@ -1,0 +1,12 @@
+#!/bin/bash
+# (Re)start swaybg with the current theme background, or a flat theme color if none.
+
+CURRENT_DIR="$HOME/.config/debianarchy/current"
+pkill -x swaybg
+
+if [[ -e $CURRENT_DIR/background ]]; then
+  setsid uwsm-app -- swaybg -i "$CURRENT_DIR/background" -m fill >/dev/null 2>&1 &
+else
+  color=$(sed -n 's/^background *= *"\(#[0-9a-fA-F]*\)".*/\1/p' "$CURRENT_DIR/theme/colors.toml" 2>/dev/null)
+  setsid uwsm-app -- swaybg -c "${color:-#1a1b26}" >/dev/null 2>&1 &
+fi

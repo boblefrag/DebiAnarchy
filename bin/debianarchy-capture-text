@@ -1,0 +1,8 @@
+#!/bin/bash
+# OCR a screen region into the clipboard
+
+geometry=$(slurp) || exit 1
+text=$(grim -g "$geometry" - | tesseract - - 2>/dev/null)
+[[ -z $text ]] && notify-send "No text found" && exit 1
+printf "%s" "$text" | wl-copy
+notify-send "Text copied to clipboard" "$(head -c 200 <<<"$text")"

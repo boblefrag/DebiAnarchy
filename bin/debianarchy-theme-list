@@ -1,0 +1,7 @@
+#!/bin/bash
+# List available themes (bundled + user themes in ~/.config/debianarchy/themes)
+
+DEBIANARCHY_PATH=${DEBIANARCHY_PATH:-$HOME/.local/share/debianarchy}
+for dir in "$DEBIANARCHY_PATH/themes"/*/ "$HOME/.config/debianarchy/themes"/*/; do
+  [[ -f $dir/colors.toml ]] && basename "$dir"
+done | sort -u

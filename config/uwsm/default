@@ -1,0 +1,7 @@
+# Changes require a restart to take effect.
+export TERMINAL=xdg-terminal-exec
+export EDITOR=nvim
+
+# Use a custom directory for screenshots / screenrecordings
+# export DEBIANARCHY_SCREENSHOT_DIR="$HOME/Pictures/Screenshots"
+# export DEBIANARCHY_SCREENRECORD_DIR="$HOME/Videos/Screencasts"

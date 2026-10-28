@@ -1,0 +1,8 @@
+#!/bin/bash
+# Audio mixer: wiremix if installed (cargo), else pulsemixer (apt)
+
+if command -v wiremix >/dev/null; then
+  exec debianarchy-launch-tui wiremix
+else
+  exec debianarchy-launch-tui pulsemixer
+fi
